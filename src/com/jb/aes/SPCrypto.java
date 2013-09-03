@@ -1,7 +1,8 @@
 /**
  * Encrypt/Decrypt strings using AES-256
  * Uses an iv of all zeros, CBC, Zero Byte padding
- * 
+ * Encryption gives a hex formatted output, Decryption accepts hex formatted inputs
+ *
  * Depends on the SpongyCastle libraries
  * 
  * Copyright (c) 2013, John Bennedict Lorenzo

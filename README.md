@@ -2,6 +2,8 @@ jbcrypto-android
 ================
 
 Encryption on Android
+Performs AES256 encryption/decryption
+Outputs hex for encryption and takes in hex string for decryption
 
 To use in your own project:
 0. Copy and setup the ff. libraries to your project: sc-light-jdk15on-1.47.0.2.jar, scprov-jdk15on-1.47.0.2.jar.
