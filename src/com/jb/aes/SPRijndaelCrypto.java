@@ -1,45 +1,15 @@
 /**
  * Encrypt/Decrypt strings using AES-256
  * Uses an iv of all zeros, CBC, Zero Byte padding
- * Encryption gives a hex formatted output, Decryption accepts hex formatted inputs
- *
- * Depends on the SpongyCastle libraries
  * 
- * Copyright (c) 2013, John Bennedict Lorenzo
- * All rights reserved.
+ * @author John Bennedict Lorenzo
  * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * 
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * 
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- * 
- * Neither the name of the {organization} nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGE
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.jb.aes;
 
-import java.io.UnsupportedEncodingException;
 import java.security.Security;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.spongycastle.crypto.CipherParameters;
 import org.spongycastle.crypto.engines.RijndaelEngine;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
@@ -48,20 +18,17 @@ import org.spongycastle.crypto.paddings.ZeroBytePadding;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 
-public class SPCrypto {
+public class SPRijndaelCrypto {
 	
 	private static int AES256KeySizeInBytes = 32; 
 	
 	static {
-		// Starts the spongy castle encryption provider
 	    Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
 	}
 	
 	public static String encrypt(String seed, String cleartext) throws Exception {
-        byte[] rawKey = getPaddedRawKey(seed); 
-                
+        byte[] rawKey = toByte(seed); 
         byte[] rawText = cleartext.getBytes("utf-8");
-        
         byte[] result = encrypt(rawKey, rawText);
         
         return toHex(result);
@@ -69,31 +36,8 @@ public class SPCrypto {
 	
 	public static String decrypt(String seed, String encrypted) throws Exception {
 	        byte[] enc = toByte(encrypted);
-	        byte[] result = decrypt(getPaddedRawKey(seed), enc);
+	        byte[] result = decrypt(toByte(seed), enc);
 	        return new String(result);
-	}
-	
-	/** Returns the bytes for the input keyString, makes sure it is AES256KeySizeInBytes bytes long */
-	private static byte[] getPaddedRawKey(String keyString) {
-		ByteArrayBuffer keyBuffer = new ByteArrayBuffer(0);
-		
-		int initialBufferLength = Math.min(AES256KeySizeInBytes, keyString.length());
-		
-		try {
-			keyBuffer.append(keyString.getBytes("utf-8"), 0, initialBufferLength);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-		int paddingLength = AES256KeySizeInBytes - initialBufferLength;
-		
-		if (paddingLength > 0) {
-			byte[] padding = new byte[paddingLength];
-			
-			keyBuffer.append(padding, initialBufferLength, paddingLength);			
-		}
-		
-		return keyBuffer.buffer();
 	}
 	
 	static byte[] ivBytes  = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

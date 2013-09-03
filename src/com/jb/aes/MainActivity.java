@@ -17,13 +17,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     
         String encrypted;
-        String key="1234567890ABCDEF1234567890ABCDEF";
+        String key="U2FsdGVkX1ABsfH59fG2OIDYPZSjY9wL";
 		try {
-			encrypted = SPCrypto.encrypt(key, "sometext");
+			encrypted = SPRubyCrypto.encrypt(key, "0.betasecurity");
 			Log.d(TAG,encrypted);
 			
-			String decrypted = SPCrypto.decrypt(key,encrypted);
-			Log.d(TAG,decrypted);			
+//			String decrypted = LO2Crypto.decrypt(key,encrypted);
+//			Log.d(TAG,decrypted);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
